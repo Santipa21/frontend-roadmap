@@ -15,7 +15,7 @@ main {
   margin: 0 auto;
 }
 
-#contenedor ul,
+.usuario,
 .post,
 .estadisticas {
   padding: 1rem;
@@ -24,8 +24,14 @@ main {
   border-radius: 0.5rem;
 }
 
-#contenedor ul {
+.usuario {
+  display: block;
+  width: 100%;
   cursor: pointer;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  text-align: left;
 }
 
 #loader {
