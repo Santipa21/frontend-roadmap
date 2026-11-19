@@ -6,16 +6,10 @@ async function obtenerUsuarios() {
   contenedor.innerHTML = "";
 
   try {
-    const [respuesta] = await Promise.all([
-      fetch("https://jsonplaceholder.typicode.com/users"),
+    const [usuarios] = await Promise.all([
+      fetchJSON("https://jsonplaceholder.typicode.com/users"),
       esperar(1500)
     ]);
-
-    if (!respuesta.ok) {
-      throw new Error(`Error HTTP al cargar usuarios: ${respuesta.status}`);
-    }
-
-    const usuarios = await respuesta.json();
 
     usuarios.forEach((usuario) => {
       const elemento = document.createElement("button");
@@ -34,37 +28,41 @@ async function obtenerUsuarios() {
   }
 }
 
+async function fetchJSON(url) {
+  const respuesta = await fetch(url);
+  if (!respuesta.ok) {
+    throw new Error(`Error HTTP ${respuesta.status} en ${url}`);
+  }
+  return respuesta.json();
+}
+
 function esperar(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+let ultimaPeticion = 0;
+
 async function cargarPosts(userId) {
+  const idPeticion = ++ultimaPeticion;
   const detalle = document.getElementById("detalle");
   detalle.textContent = "Cargando publicaciones y tareas...";
 
   try {
     const postsUrl = `https://jsonplaceholder.typicode.com/users/${userId}/posts`;
     const todosUrl = `https://jsonplaceholder.typicode.com/users/${userId}/todos`;
-    const [postsResponse, todosResponse] = await Promise.all([
-      fetch(postsUrl),
-      fetch(todosUrl)
-    ]);
-
-    if (!postsResponse.ok) {
-      throw new Error(`Error HTTP al cargar publicaciones: ${postsResponse.status}`);
-    }
-    if (!todosResponse.ok) {
-      throw new Error(`Error HTTP al cargar tareas: ${todosResponse.status}`);
-    }
-
     const [posts, tareas] = await Promise.all([
-      postsResponse.json(),
-      todosResponse.json()
+      fetchJSON(postsUrl),
+      fetchJSON(todosUrl)
     ]);
+
+    if (idPeticion !== ultimaPeticion) return;
+
     const estadisticas = calcularEstadisticas(posts, tareas);
 
     renderizarDetalle(posts, estadisticas);
   } catch (error) {
+    if (idPeticion !== ultimaPeticion) return;
+
     console.error("Algo falló al cargar los datos del usuario:", error);
     detalle.innerHTML =
       '<p class="error">No se pudieron cargar las publicaciones y tareas. Inténtalo de nuevo.</p>';
