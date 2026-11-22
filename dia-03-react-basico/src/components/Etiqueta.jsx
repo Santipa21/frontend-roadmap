@@ -1,7 +1,5 @@
-export const Etiqueta =(props) => {
+export const Etiqueta =({children}) => {
     return (
-        <div>
-            <span className="etiqueta">{props.children}</span>
-        </div>
+            <span className="etiqueta">{children}</span>
     )
 }

@@ -5,9 +5,9 @@ export const ListaProductos = ({ productos }) => {
         productos.length > 0 ?
             <section className="lista-productos">
                 {productos.map(producto =>
-                    <TarjetaProducto key={producto.id} nombre={producto.nombre} precio={producto.precio} stock={producto.stock} categoria={producto.categoria} descuento={producto.descuento}> </TarjetaProducto>
+                    <TarjetaProducto key={producto.id} nombre={producto.nombre} precio={producto.precio} stock={producto.stock} categoria={producto.categoria} descuento={producto.descuento} />
                 )}
             </section>
-            : <p>El array esta vacio</p>
+            : <p>No hay productos disponibles</p>
     )
 }
